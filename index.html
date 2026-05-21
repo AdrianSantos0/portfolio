@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio - Adrián Santos Prior</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Variables y Reseteo */
+        :root {
+            --bg-color: #f7f5f0; /* Blanco roto elegante */
+            --text-color: #333333;
+            --accent-color: #2c3e50;
+            --hover-color: #34495e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow: hidden; /* Oculto inicialmente por la pantalla de bienvenida */
+            scroll-behavior: smooth;
+        }
+
+        /* Pantalla de Bienvenida */
+        #welcome-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease-in-out, visibility 0.8s ease-in-out;
+        }
+
+        .btn-oval {
+            background-color: var(--accent-color);
+            color: #ffffff;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-decoration: none;
+        }
+
+        .btn-oval:hover {
+            transform: scale(1.05) translateY(-2px);
+            background-color: var(--hover-color);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        /* Cabecera (Header) */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            padding: 30px 20px 15px;
+            z-index: 100;
+            background: linear-gradient(to bottom, var(--bg-color) 70%, transparent);
+            transition: padding 0.5s ease;
+        }
+
+        header.scrolled {
+            padding: 15px 20px;
+            background: var(--bg-color);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .profile-pic-container {
+            height: 120px;
+            transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #profile-pic {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent-color);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .profile-pic-container.hidden {
+            height: 0;
+            opacity: 0;
+            margin-bottom: 0;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-top: 10px;
+            color: var(--accent-color);
+            transition: font-size 0.4s ease;
+        }
+
+        header.scrolled h1 {
+            font-size: 1.4rem;
+            margin-top: 0;
+        }
+
+        /* Contenedor principal de secciones */
+        main {
+            height: 100vh;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            padding-bottom: 100px; /* Espacio para el nav bottom */
+        }
+
+        /* Ocultar barra de scroll para mayor elegancia */
+        main::-webkit-scrollbar {
+            display: none;
+        }
+        main {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        section {
+            height: 100vh;
+            scroll-snap-align: start;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 120px 20px 80px;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: var(--accent-color);
+            position: relative;
+            display: inline-block;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            width: 50%;
+            height: 3px;
+            background-color: var(--accent-color);
+            bottom: -10px;
+            left: 25%;
+            border-radius: 2px;
+        }
+
+        .content-box {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+            width: 100%;
+            text-align: left;
+            overflow-y: auto;
+            max-height: 60vh;
+        }
+        
+        .content-box::-webkit-scrollbar {
+            width: 6px;
+        }
+        .content-box::-webkit-scrollbar-thumb {
+            background-color: #ccc;
+            border-radius: 10px;
+        }
+
+        .item {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .item h3 {
+            font-size: 1.1rem;
+            color: var(--accent-color);
+            margin-bottom: 5px;
+        }
+        
+        .item p {
+            font-size: 0.95rem;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .tag {
+            display: inline-block;
+            background: #eee;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            margin: 5px 5px 0 0;
+            color: #555;
+        }
+
+        /* Navegación Inferior */
+        nav {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            display: flex;
+            gap: 15px;
+            background: rgba(247, 245, 240, 0.9);
+            padding: 10px 20px;
+            border-radius: 50px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            backdrop-filter: blur(5px);
+        }
+
+        .nav-btn {
+            background-color: transparent;
+            color: var(--accent-color);
+            border: 2px solid var(--accent-color);
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background-color: var(--accent-color);
+            color: #ffffff;
+        }
+
+        @media (max-width: 600px) {
+            nav {
+                width: 95%;
+                justify-content: space-between;
+                padding: 10px;
+                gap: 5px;
+            }
+            .nav-btn {
+                padding: 8px 12px;
+                font-size: 0.8rem;
+            }
+            section {
+                padding: 140px 15px 90px;
+            }
+            #profile-pic {
+                width: 90px;
+                height: 90px;
+            }
+            .profile-pic-container { height: 90px; }
+            h1 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="welcome-screen">
+        <button id="enter-btn" class="btn-oval">Bienvenido a mi Portfolio</button>
+    </div>
+
+    <header id="main-header">
+        <div class="profile-pic-container" id="pic-container">
+            <img src="Perfil.jpg" id="profile-pic" alt="Foto de Adrián Santos Prior" onerror="this.src='https://via.placeholder.com/120?text=Foto'">
+        </div>
+        <h1 id="profile-name">Adrián Santos Prior</h1>
+    </header>
+
+    <main id="main-content">
+        
+        <section id="formacion">
+            <h2>Formación</h2>
+            <div class="content-box">
+                <div class="item">
+                    <h3>Informática y Redes</h3>
+                    <p>Grado Medio Técnico en Microinformática y Redes (DigiTech).</p>
+                    <p>Curso de redes domésticas e infraestructura (Cisco).</p>
+                    <p>Curso de Ciberseguridad (Cisco).</p>
+                </div>
+                <div class="item">
+                    <h3>Hostelería</h3>
+                    <p>Curso Técnico de cocina profesional (Escuela Superior de Hostelería de Sevilla).</p>
+                </div>
+                <div class="item">
+                    <h3>Otros Estudios</h3>
+                    <p>Graduado en Educación Secundaria Obligatoria.</p>
+                    <p>Curso Piloto de UAS A1/A3.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="experiencia">
+            <h2>Experiencia Laboral</h2>
+            <div class="content-box">
+                <div class="item">
+                    <h3>Sector Tecnológico</h3>
+                    <p><strong>Técnico remoto / incidencias informáticas (Tier1) - 2026:</strong> Asistencia en remoto de incidencias (Carrefour, FNAC), administración en tiempo real, conexión a servidores, balanzas, equipos y gestión global de incidencias.</p>
+                    <p><strong>Técnico de soporte informático (C&G):</strong> Reparación de equipos (sobremesas, portátiles, móviles, tablets), configuración de discos duros y redes.</p>
+                </div>
+                <div class="item">
+                    <h3>Sector Hostelería</h3>
+                    <p><strong>Hotel Barceló 5* (Sevilla):</strong> Ayudante de cocina / Preparación de buffet libre, pastelería, partida frío/caliente, múltiples funciones.</p>
+                    <p><strong>El tonel (Almería):</strong> Cocinero de partida caliente.</p>
+                    <p><strong>Avareo (Sevilla):</strong> Cocinero de partida frío.</p>
+                </div>
+                <div class="item">
+                    <h3>Transporte y Logística</h3>
+                    <p>Chófer de tráiler (GTO).</p>
+                    <p>Chófer / Servicios de desplazamientos (Cabify).</p>
+                    <p>Operario de limpieza / Chófer camión cisterna / Barredora (Urbaser).</p>
+                </div>
+                <div class="item">
+                    <h3>Otros Sectores</h3>
+                    <p>Operario de producción (NBT).</p>
+                    <p>Operario / Preparador de pedidos (Carrefour) - 2017.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="habilidades">
+            <h2>Habilidades y Contacto</h2>
+            <div class="content-box">
+                <div class="item">
+                    <h3>Aptitudes</h3>
+                    <div>
+                        <span class="tag">Capacidad de aprender rápido</span>
+                        <span class="tag">Capacidades tecnológicas</span>
+                        <span class="tag">Trabajo en equipo</span>
+                        <span class="tag">Liderazgo</span>
+                        <span class="tag">Ordenado</span>
+                        <span class="tag">Resolutivo</span>
+                    </div>
+                </div>
+                <div class="item">
+                    <h3>Actitud</h3>
+                    <p>Siempre positivo, capaz de crecerme en momentos difíciles. Buen compañero, dispuesto a nuevos retos, transmito buena energía y tengo una adaptación rápida.</p>
+                </div>
+                <div class="item">
+                    <h3>Idiomas & Otros Datos</h3>
+                    <p>Español (Nativo) | Inglés (A2)</p>
+                    <p>Carnet de conducir.</p>
+                </div>
+                <div class="item">
+                    <h3>Contacto</h3>
+                    <p>✉️ adriansantosprior0@gmail.com</p>
+                    <p>📞 +34 674 488 500</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <nav>
+        <button class="nav-btn active" onclick="scrollToSection('formacion')">Formación</button>
+        <button class="nav-btn" onclick="scrollToSection('experiencia')">Experiencia</button>
+        <button class="nav-btn" onclick="scrollToSection('habilidades')">Habilidades</button>
+    </nav>
+
+    <script>
+        // Lógica de la pantalla de bienvenida
+        document.getElementById('enter-btn').addEventListener('click', function() {
+            const welcomeScreen = document.getElementById('welcome-screen');
+            welcomeScreen.style.opacity = '0';
+            setTimeout(() => {
+                welcomeScreen.style.visibility = 'hidden';
+                document.body.style.overflow = 'auto'; // Habilitar scroll del body
+                
+                // Animar la primera sección al entrar
+                checkVisibility();
+            }, 800);
+        });
+
+        // Lógica para esconder la foto al hacer scroll
+        const mainContent = document.getElementById('main-content');
+        const picContainer = document.getElementById('pic-container');
+        const header = document.getElementById('main-header');
+
+        mainContent.addEventListener('scroll', () => {
+            if (mainContent.scrollTop > 50) {
+                picContainer.classList.add('hidden');
+                header.classList.add('scrolled');
+            } else {
+                picContainer.classList.remove('hidden');
+                header.classList.remove('scrolled');
+            }
+            checkVisibility();
+            updateNavActive();
+        });
+
+        // Navegación fluida por botones
+        function scrollToSection(id) {
+            const section = document.getElementById(id);
+            mainContent.scrollTo({
+                top: section.offsetTop,
+                behavior: 'smooth'
+            });
+        }
+
+        // Animación de aparición de las secciones
+        const sections = document.querySelectorAll('section');
+        function checkVisibility() {
+            sections.forEach(sec => {
+                const rect = sec.getBoundingClientRect();
+                // Si la sección está visible en la ventana
+                if (rect.top < window.innerHeight - 100 && rect.bottom >= 100) {
+                    sec.classList.add('visible');
+                }
+            });
+        }
+
+        // Actualizar botón activo en la navegación según el scroll
+        const navButtons = document.querySelectorAll('.nav-btn');
+        function updateNavActive() {
+            let current = '';
+            sections.forEach(sec => {
+                const rect = sec.getBoundingClientRect();
+                // Determinar qué sección está más en pantalla
+                if (rect.top <= window.innerHeight / 2 && rect.bottom >= window.innerHeight / 2) {
+                    current = sec.getAttribute('id');
+                }
+            });
+            
+            navButtons.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('onclick').includes(current)) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
